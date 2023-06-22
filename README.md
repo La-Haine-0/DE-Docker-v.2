@@ -1,41 +1,32 @@
 # DE-Docker-v.2
+## Другое исполнение задания по созданию Docker-контейнера;
 
-### Описание:
+### Описание наполнения файла Docker-compose:
+version: 'Указатель версии D-C'(можно проверить Docker-compose -v)
+services:(Подключенные БД или приложения)
+  db:
+    image: postgres:latest (Образ)
+    restart: always
+    ports:(указание портов)
+      - "5432:5432"
+    volumes:(указание томов для БД и файла джуна)
+      - ../init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./app/data/:/var/lib/postgresql/data/
+    environment:(назовем это конфигурацией)
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: testdb
+    healthcheck:(Отладчик)
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      retries: 5
 
-Docker-контейнер для homework_de_docker.
-
-### Шаблон наполнения env-файла:
-
-Создайте файл .env с переменными окружения для работы с базой данных:
-
-```
-POSTGRES_PASSWORD=postgres # пароль для подключения к БД (установите свой)
-POSTGRES_USER=postgres # логин для подключения к базе данных
-POSTGRES_DB=testdb # название базы данных
-```
-
-### Команды для запуска приложения в контейнерах:
-
-Собрать контейнер:
-
-```
-docker-compose up -d --build
-```
-
-Остановить контейнер:
-
-```
-docker stop ID-контейнера
-```
-
-Запустить контейнер:
-
-```
-docker run ID-контейнера
-```
-
-Подключиться к работающему контейнеру, запускать интерфейс psql и вносить новые данные «на лету»:
-
-```
-docker exec -it infra-db-1 psql -U postgres
-```
+### P.S DOCKER-COMPOSE КОМАНДЫ:
+```sh
+docker compose ps
+docker compose up –d
+docker compose stop
+docker compose rm
+docker compose down (== stop & rm)
+docker compose logs -–tail=100 –f 
+ ```
